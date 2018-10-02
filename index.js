@@ -22,7 +22,7 @@ if (!fs.existsSync(screenshotRootPath)){
   fs.mkdirSync(screenshotRootPath);
 }
 
-puppeteer.launch().then(async browser => {
+puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
   const page = await browser.newPage();
 
   // TODO, error state for no scenarios
@@ -56,23 +56,22 @@ puppeteer.launch().then(async browser => {
       // });
       // console.log('Page Links: ', links);
 
-      const screenshotHandler = new ScreenshotHandler(page);
       const imgFilePath = Util.generateFilePath(
         screenshotRootPath,
         scenario.label,
         breakpoint.label,
         'jpg'
       );
-
+      const screenshotHandler = new ScreenshotHandler(page);
       await screenshotHandler.takeFullPageScreenshot(imgFilePath);
 
-      const pdfHandler = new PdfHandler();
       const pdfFilePath = Util.generateFilePath(
         screenshotRootPath,
         scenario.label,
         breakpoint.label,
         'pdf'
       );
+      const pdfHandler = new PdfHandler();
       pdfHandler.open(pdfFilePath);
       pdfHandler.addImg(imgFilePath);
       pdfHandler.close();

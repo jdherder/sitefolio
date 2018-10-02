@@ -7,6 +7,7 @@ class ScreenshotHandler {
     return this.page.screenshot({
       path: path,
       fullPage: true,
+      quality: 80,
     });
   }
 }
