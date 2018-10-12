@@ -33,6 +33,11 @@ class AemHandler {
       ]);
     }
   }
+
+  static setWcmModeOnUrl(url, mode = 'disabled') {
+    const wcmParam = `wcmmode=${mode}`;
+    return url.includes('?') ? `${url}&${wcmParam}` : `${url}?${wcmParam}`;
+  }
 }
 
 module.exports = AemHandler;

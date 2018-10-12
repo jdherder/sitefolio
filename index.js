@@ -3,8 +3,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 /* Config Dependencies */
-const scenarios = require('./config/scenarios');
-const breakpoints = require('./config/breakpoints');
+const scenario = require('./config/scenario');
 
 /* Internal Module Dependencies */
 const Util = require('./modules/Util');
@@ -14,7 +13,7 @@ const ScreenshotHandler = require('./modules/ScreenshotHandler');
 
 /* Global Vars */
 const screenshotRootPath = `screenshots/${new Date().toISOString().slice(0,10)}`;
-
+const screenshotFormatExt = 'png';
 
 /* Main */
 
@@ -25,60 +24,82 @@ if (!fs.existsSync(screenshotRootPath)){
 puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
   const page = await browser.newPage();
 
-  // TODO, error state for no scenarios
-  for (const scenario of scenarios) {
+  await page.goto(scenario.primary_url, {
+    waitUntil: 'networkidle0'
+  });
 
-    // TODO, error state for no breakpoints
-    for (const breakpoint of breakpoints) {
+  const aemHandler = new AemHandler(page);
+  await aemHandler.localAuthorLoginCheck();
 
+  const navLinks = await page.evaluate(() => {
+    const nav = document.querySelector('.int-nav-main.navbar-default');
+    const links = Array.from(nav.querySelectorAll('.nav-link'));
+    return links
+      .filter((link) => {
+        /* Filter out nav links with a 'pointer-events: none' style applied */
+        const style = window.getComputedStyle(link);
+        const filter = Boolean(style.pointerEvents !== 'none');
+        return filter;
+      })
+      .map(link => link.href);
+  });
+
+  const processedLinks = navLinks
+    // .slice(0, 3) // FIXME - For faster testing.
+    .map(href => AemHandler.setWcmModeOnUrl(href));
+
+  console.log(processedLinks);
+
+  const pdfFilePath = Util.generateFilePath(
+    screenshotRootPath,
+    [scenario.label, scenario.screen_width, new Date()],
+    'pdf'
+  );
+  const pdfHandler = new PdfHandler();
+  pdfHandler.open(pdfFilePath);
+
+  for (const href of processedLinks) {
+
+    try {
       await page.setViewport({
-        ...breakpoint
+        width: scenario.screen_width,
+        height: scenario.screen_height,
       });
       
-      await page.goto(scenario.url, {
+      await page.goto(href, {
         waitUntil: 'networkidle0'
       });
 
-      const aemHandler = new AemHandler(page);
       await aemHandler.localAuthorLoginCheck();
 
-      console.log(`Processing: ${scenario.label} - ${breakpoint.label}`);
-
       const title = await page.title();
-      console.log('Page Title: ', title);
 
-      // const links = await page.evaluate(() => {
-      //   const links = Array.from(document.querySelectorAll('a'));
-      //   return links.map(link => ({
-      //     text: link.innerHTML,
-      //     href: link.href,
-      //   }));
-      // });
-      // console.log('Page Links: ', links);
+      console.log(`Processing: ${title}`);
 
       const imgFilePath = Util.generateFilePath(
         screenshotRootPath,
-        scenario.label,
-        breakpoint.label,
-        'jpg'
+        [scenario.label, title, new Date()],
+        screenshotFormatExt
       );
       const screenshotHandler = new ScreenshotHandler(page);
       await screenshotHandler.takeFullPageScreenshot(imgFilePath);
 
-      const pdfFilePath = Util.generateFilePath(
-        screenshotRootPath,
-        scenario.label,
-        breakpoint.label,
-        'pdf'
-      );
-      const pdfHandler = new PdfHandler();
-      pdfHandler.open(pdfFilePath);
-      pdfHandler.addImg(imgFilePath);
-      pdfHandler.close();
-    }
+      /* Add screenshot to full site PDF */
+      pdfHandler.addScreenshotPage(imgFilePath, {
+        pageTitle: title,
+        pageUrl: href
+      });
+
+    } catch (e) {
+      console.log('ERROR', e);
+    } 
 
   }
-  
+
+  pdfHandler.close();
+
+  await ScreenshotHandler.deleteImageFiles(screenshotRootPath, screenshotFormatExt);
+
   await browser.close();
 });
 

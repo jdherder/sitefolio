@@ -1,9 +1,8 @@
 class Util {
   constructor() { }
 
-  static generateFilePath(rootPath, scenarioLabel, breakpointLabel, format) {
-    const file = `${rootPath}/${this.slugify(scenarioLabel)}_${this.slugify(breakpointLabel)}.${format}`;
-    return file;
+  static generateFilePath(rootPath, namesArr = [], format) {
+    return `${rootPath}/${this.slugify(namesArr.join('_'))}.${format}`;
   }
 
   static slugify(s) {
