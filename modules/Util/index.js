@@ -12,6 +12,12 @@ class Util {
     s = s.replace(_slugify_hyphenate_re, '-');
     return s;
   }
+
+  static createDirectory(path) {
+    if (!fs.existsSync(path)){
+      fs.mkdirSync(path);
+    }
+  }
 }
 
 module.exports = Util;

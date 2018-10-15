@@ -17,10 +17,6 @@ const screenshotFormatExt = 'png';
 
 /* Main */
 
-if (!fs.existsSync(screenshotRootPath)){
-  fs.mkdirSync(screenshotRootPath);
-}
-
 puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
   const page = await browser.newPage();
 
@@ -31,6 +27,9 @@ puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
   const aemHandler = new AemHandler(page);
   await aemHandler.localAuthorLoginCheck();
 
+  Util.createDirectory(screenshotRootPath);
+
+  /* Crawl Intouch Accelerator main nav and grab appropriate links */
   const navLinks = await page.evaluate(() => {
     const nav = document.querySelector('.int-nav-main.navbar-default');
     const links = Array.from(nav.querySelectorAll('.nav-link'));
