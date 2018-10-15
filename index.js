@@ -51,6 +51,7 @@ puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
 
   const processedLinks = navLinks
     // .slice(0, 3) // FIXME - For faster testing.
+    // .filter(href => href.includes('/plaque-psoriasis/efficacy/dramatic-skin-clearance.html')) // FIXME - For specific testing.
     .map(href => AemHandler.setWcmModeOnUrl(href));
 
   console.log(processedLinks);
@@ -65,39 +66,51 @@ puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
 
   for (const href of processedLinks) {
 
-    try {
-      await page.setViewport({
-        width: scenario.screen_width,
-        height: scenario.screen_height,
-      });
-      
-      await page.goto(href, {
-        waitUntil: 'networkidle0'
-      });
+    await page.setViewport({
+      width: scenario.screen_width,
+      height: scenario.screen_height,
+    });
+    
+    await page.goto(href, {
+      waitUntil: 'networkidle0'
+    });
 
-      await aemHandler.localAuthorLoginCheck();
+    await aemHandler.localAuthorLoginCheck();
 
-      const title = await page.title();
+    const title = await page.title();
 
-      console.log(`Processing: ${title}`);
+    console.log(`Processing: ${title}`);
 
-      const imgFilePath = Util.generateFilePath(
-        screenshotRootPath,
-        [scenario.label, title, new Date()],
-        screenshotFormatExt
-      );
-      const screenshotHandler = new ScreenshotHandler(page);
-      await screenshotHandler.takeFullPageScreenshot(imgFilePath);
+    const imgFilePath = Util.generateFilePath(
+      screenshotRootPath,
+      [scenario.label, title, new Date()],
+      screenshotFormatExt
+    );
+    const screenshotHandler = new ScreenshotHandler(page);
+    await screenshotHandler.takeFullPageScreenshot(imgFilePath);
 
-      /* Add screenshot to full site PDF */
-      pdfHandler.addScreenshotPage(imgFilePath, {
-        pageTitle: title,
-        pageUrl: href
-      });
+    /* Add screenshot to full site PDF */
+    pdfHandler.addScreenshotPage(imgFilePath, {
+      pageTitle: title,
+      pageUrl: href
+    });
 
-    } catch (e) {
-      console.log('ERROR', e);
-    } 
+    /* Process Sub Scenarios */
+    // TODO: Utilize the sub scenario cases to action on them and take additional screenshots
+    // const pageSubScenarios = await page.evaluate((scenario) => {
+    //   const targetClassPrefix = 'screenshot-selector-target';
+    //   const subScenarioTargets = Array.from(document.querySelectorAll('.nav-tabs .dynamic-tab'));
+    //   const subScenarioTargetClasses = [];
+
+    //   // Add a custom unique selector to each DOM node that we will need to interact with for an additional screenshot.
+    //   subScenarioTargets.forEach((node, i) => {
+    //     const className = `${targetClassPrefix}-${i}`;
+    //     node.classList.add(className);
+    //     subScenarioTargetClasses.push(className);
+    //   });
+
+    //   return subScenarioTargetClasses;
+    // }, scenario);
 
   }
 
