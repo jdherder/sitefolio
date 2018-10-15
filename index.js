@@ -1,6 +1,5 @@
 /* Node Dependencies */
 const puppeteer = require('puppeteer');
-const fs = require('fs');
 
 /* Config Dependencies */
 const scenario = require('./config/scenario');
@@ -30,10 +29,11 @@ puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
   Util.createDirectory(screenshotRootPath);
 
   /* Crawl Intouch Accelerator main nav and grab appropriate links */
-  const navLinks = await page.evaluate(() => {
-    const nav = document.querySelector('.int-nav-main.navbar-default');
-    const links = Array.from(nav.querySelectorAll('.nav-link'));
-    return links
+  const navLinks = await page.evaluate((scenario) => {
+    const nav = document.querySelector(scenario.main_nav_selector);
+    const links = Array.from(nav.querySelectorAll(scenario.main_nav_link_selector));
+    const additionalUrls = scenario.additional_urls;
+    const urls = links
       .filter((link) => {
         /* Filter out nav links with a 'pointer-events: none' style applied */
         const style = window.getComputedStyle(link);
@@ -41,7 +41,13 @@ puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
         return filter;
       })
       .map(link => link.href);
-  });
+
+    if (Array.isArray(additionalUrls)) {
+      urls.push.apply(urls, additionalUrls);
+    }
+
+    return urls;
+  }, scenario);
 
   const processedLinks = navLinks
     // .slice(0, 3) // FIXME - For faster testing.
