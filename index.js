@@ -30,7 +30,7 @@ exports.run = (scenario) => {
   
     const pdfFilePath = Util.generateFilePath(
       screenshotRootPath,
-      [scenario.label, scenario.screen_width, new Date()],
+      [scenario.label, Util.getTimestamp()],
       'pdf'
     );
     const pdfHandler = new PdfHandler();
@@ -64,7 +64,7 @@ exports.run = (scenario) => {
   
       const imgFilePath = Util.generateFilePath(
         screenshotRootPath,
-        [scenario.label, title, new Date()],
+        [scenario.label, title, Util.getTimestamp()],
         screenshotFormatExt
       );
       const screenshotHandler = new ScreenshotHandler(page);
