@@ -18,14 +18,33 @@ class PdfHandler {
     const dimensions = sizeOf(imgFilePath);
     const dataBlockHeight = 70;
 
-    /* Add a new page for this image at the exact image size */
+    const usLetterPtWidth = 612;
+    const usLetterPtHeight = 792;
+    const pageWidth = usLetterPtHeight;
+
+    // TODO: 2 is kinda arbitrary here, it matches the scale factor but this is px vs pt anyway.
+    const imgScaledWidth = parseInt(dimensions.width / 2); 
+    const imgScaledHeight = parseInt(dimensions.height / 2);
+
+    let imgRenderPtWidth = 0;
+    let imgRenderPtHeight = 0;
+
+    if (imgScaledWidth >= pageWidth) {
+      imgRenderPtWidth = pageWidth;
+      imgRenderPtHeight = parseInt(imgScaledHeight * (pageWidth / imgRenderPtWidth));
+    } else {
+      imgRenderPtWidth = imgScaledWidth;
+      imgRenderPtHeight = imgScaledHeight;
+    }
+
+    /* Add a new page for this image */
     this.doc.addPage({
-      size: [dimensions.width, dimensions.height + dataBlockHeight],
-      //size: 'LETTER' <- For standard US letter size.
+      size: [pageWidth, imgRenderPtHeight + dataBlockHeight],
     })
-    .text(`Page Title: ${pageData.pageTitle}   |   As of: ${new Date()}`, 20, 20)
-    .text(`URL: ${pageData.pageUrl}`, 20, 40)
-    .image(imgFilePath, 0, dataBlockHeight, {});
+    .text(`Page Title: ${pageData.pageTitle}`, 20, 10)
+    .text(`URL: ${pageData.pageUrl}`, 20, 30)
+    .text(`As of: ${new Date()} - Browser width: ${pageData.scenario.screen_width}px`, 20, 50)
+    .image(imgFilePath, 0, dataBlockHeight, { width: imgRenderPtWidth });
   }
 
   close() {

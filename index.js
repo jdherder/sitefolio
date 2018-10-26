@@ -9,7 +9,7 @@ const ScreenshotHandler = require('./modules/ScreenshotHandler');
 
 /* Global Vars */
 const screenshotRootPath = `screenshots/${new Date().toISOString().slice(0,10)}`;
-const screenshotFormatExt = 'png';
+const screenshotFormatExt = 'jpg';
 
 /* Main */
 
@@ -19,7 +19,10 @@ exports.run = (scenario) => {
     throw new Error('No scenario configuration provided!');
   }
 
-  puppeteer.launch({ ignoreHTTPSErrors: true }).then(async browser => {
+  puppeteer.launch({
+    headless: true,
+    ignoreHTTPSErrors: true,
+  }).then(async browser => {
     const page = await browser.newPage();
   
     const aemHandler = new AemHandler(page);
@@ -47,6 +50,7 @@ exports.run = (scenario) => {
       await page.setViewport({
         width: scenario.screen_width,
         height: scenario.screen_height,
+        deviceScaleFactor: 2, // For higher DPI screenshots.
       });
       
       console.log('Navigating to: ', url);
@@ -72,8 +76,9 @@ exports.run = (scenario) => {
   
       /* Add screenshot to full site PDF */
       pdfHandler.addScreenshotPage(imgFilePath, {
+        scenario,
         pageTitle: title,
-        pageUrl: url
+        pageUrl: url,
       });
     }
   
