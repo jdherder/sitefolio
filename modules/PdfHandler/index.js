@@ -31,7 +31,7 @@ class PdfHandler {
 
     if (imgScaledWidth >= pageWidth) {
       imgRenderPtWidth = pageWidth;
-      imgRenderPtHeight = parseInt(imgScaledHeight * (pageWidth / imgRenderPtWidth));
+      imgRenderPtHeight = parseInt(imgScaledHeight * (pageWidth / imgScaledWidth));
     } else {
       imgRenderPtWidth = imgScaledWidth;
       imgRenderPtHeight = imgScaledHeight;
