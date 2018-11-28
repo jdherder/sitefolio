@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-class Util {
+export default class Util {
   constructor() { }
 
-  static generateFilePath(rootPath, namesArr = [], format) {
+  static generateFilePath(rootPath: string, namesArr: (string | number)[], format: string) {
     return `${rootPath}/${this.slugify(namesArr.join('_'))}.${format}`;
   }
 
-  static slugify(s) {
+  static slugify(s: string) {
     const _slugify_strip_re = /[^\w\s-]/g;
     const _slugify_hyphenate_re = /[-\s]+/g;
     s = s.replace(_slugify_strip_re, '').trim().toLowerCase();
@@ -17,7 +17,7 @@ class Util {
   }
 
   // Thanks to Mouneer on SO for the below method.
-  static mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
+  static mkDirByPathSync(targetDir: string, { isRelativeToScript = false } = {}) {
     if (fs.existsSync(targetDir)){
       return;
     }
@@ -54,5 +54,3 @@ class Util {
     return Math.round((new Date()).getTime() / 1000);
   }
 }
-
-module.exports = Util;

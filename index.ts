@@ -1,11 +1,12 @@
 /* Node Dependencies */
-const puppeteer = require('puppeteer');
+import * as puppeteer from 'puppeteer';
 
 /* Internal Module Dependencies */
-const Util = require('./modules/Util');
-const AemHandler = require('./modules/AemHandler');
-const PdfHandler = require('./modules/PdfHandler');
-const ScreenshotHandler = require('./modules/ScreenshotHandler');
+import * as interfaces from './interfaces';
+import Util from './modules/Util';
+import AemHandler from './modules/AemHandler';
+import PdfHandler from './modules/PdfHandler';
+import ScreenshotHandler from './modules/ScreenshotHandler';
 
 /* Global Vars */
 const screenshotRootPath = `screenshots/${new Date().toISOString().slice(0,10)}`;
@@ -13,7 +14,7 @@ const screenshotFormatExt = 'jpg';
 
 /* Main */
 
-exports.run = (scenario) => {
+export function run(scenario: interfaces.Scenario) {
 
   if (!scenario) {
     throw new Error('No scenario configuration provided!');
@@ -22,6 +23,7 @@ exports.run = (scenario) => {
   puppeteer.launch({
     headless: true,
     ignoreHTTPSErrors: true,
+    args: scenario.puppeteerArgs || [],
   }).then(async browser => {
     const page = await browser.newPage();
   
@@ -48,14 +50,15 @@ exports.run = (scenario) => {
       }
 
       await page.setViewport({
-        width: scenario.screen_width,
-        height: scenario.screen_height,
+        width: scenario.screenWidth,
+        height: scenario.screenHeight,
         deviceScaleFactor: 2, // For higher DPI screenshots.
       });
       
       console.log('Navigating to: ', url);
       await page.goto(url, {
-        waitUntil: 'networkidle0'
+        timeout: 10000,
+        waitUntil: 'load'
       });
   
       if (scenario.aemAuthor) {

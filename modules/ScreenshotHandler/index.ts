@@ -1,19 +1,22 @@
-const fs = require('fs');
-const path = require('path');
+import { Page } from 'puppeteer';
+import * as fs from 'fs';
+import * as path from 'path';
 
-class ScreenshotHandler {
-  constructor(page) {
+export default class ScreenshotHandler {
+  page: Page;
+
+  constructor(page: Page) {
     this.page = page;
   }
 
-  takeFullPageScreenshot(path) {
+  takeFullPageScreenshot(path: string) {
     return this.page.screenshot({
       path: path,
       fullPage: true,
     });
   }
 
-  static deleteImageFiles(directory, ext = 'png') {
+  static deleteImageFiles(directory: string, ext = 'png') {
     return fs.readdir(directory, (err, files) => {
       if (err) throw err;
     
@@ -27,5 +30,3 @@ class ScreenshotHandler {
     });
   }
 }
-
-module.exports = ScreenshotHandler;

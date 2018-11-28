@@ -4,13 +4,19 @@
   "description": "When time for a site review process to begin, automate the process of preparing documents for review.",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Josh Herder",
   "license": "ISC",
   "devDependencies": {
+    "@types/image-size": "0.0.29",
+    "@types/node": "^10.12.10",
+    "@types/pdfkit": "^0.7.36",
+    "@types/puppeteer": "^1.10.0",
     "image-size": "^0.6.3",
     "pdfkit": "^0.8.3",
-    "puppeteer": "^1.8.0"
+    "puppeteer": "^1.8.0",
+    "typescript": "^3.1.6"
   }
 }

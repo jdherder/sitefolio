@@ -1,5 +1,23 @@
-class AemHandler {
-  constructor(page) {
+import { Page } from 'puppeteer';
+
+interface Selectors {
+  loginForm: string;
+  username: string;
+  password: string;
+  submit: string;
+}
+
+interface AemAuthorCredentials {
+  username: string;
+  password: string;
+}
+
+export default class AemHandler {
+  page: Page;
+  selectors: Selectors;
+  aemAuthorCredentials: AemAuthorCredentials;
+
+  constructor(page: Page) {
     this.page = page;
 
     this.selectors = {
@@ -34,10 +52,8 @@ class AemHandler {
     }
   }
 
-  static setWcmModeOnUrl(url, mode = 'disabled') {
+  static setWcmModeOnUrl(url: string, mode = 'disabled') {
     const wcmParam = `wcmmode=${mode}`;
     return url.includes('?') ? `${url}&${wcmParam}` : `${url}?${wcmParam}`;
   }
 }
-
-module.exports = AemHandler;
