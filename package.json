@@ -1,8 +1,9 @@
 {
   "name": "sitefolio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "When time for a site review process to begin, automate the process of preparing documents for review.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
