@@ -1,7 +1,7 @@
 {
   "name": "sitefolio",
   "version": "0.1.3",
-  "description": "When time for a site review process to begin, automate the process of preparing documents for review.",
+  "description": "This is a tool to allow you to easily capture images of your static site and save to a single PDF. This might come in handy to save a visual record of your site, or for a review process to make annotations and markups easier.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,6 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Josh Herder",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/jdherder/sitefolio.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/image-size": "0.0.29",
