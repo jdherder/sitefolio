@@ -1,6 +1,6 @@
 {
   "name": "sitefolio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "When time for a site review process to begin, automate the process of preparing documents for review.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,9 +15,11 @@
     "@types/node": "^10.12.10",
     "@types/pdfkit": "^0.7.36",
     "@types/puppeteer": "^1.10.0",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
     "image-size": "^0.6.3",
     "pdfkit": "^0.8.3",
-    "puppeteer": "^1.8.0",
-    "typescript": "^3.1.6"
+    "puppeteer": "^1.8.0"
   }
 }
