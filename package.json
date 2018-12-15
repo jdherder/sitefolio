@@ -1,6 +1,6 @@
 {
   "name": "sitefolio",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "When time for a site review process to begin, automate the process of preparing documents for review.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
