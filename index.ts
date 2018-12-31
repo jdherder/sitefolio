@@ -75,7 +75,7 @@ export function run(scenario: interfaces.Scenario) {
         screenshotFormatExt
       );
       const screenshotHandler = new ScreenshotHandler(page);
-      await screenshotHandler.takeFullPageScreenshot(imgFilePath);
+      await screenshotHandler.takeFullPageScreenshot(imgFilePath, scenarioPage);
   
       /* Add screenshot to full site PDF */
       pdfHandler.addScreenshotPage(imgFilePath, {

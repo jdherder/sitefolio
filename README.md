@@ -27,9 +27,11 @@ const scenario = {
   pages: [
     {
       url: 'https://jh.fyi/projects/',
+      captureFullPage: true,
     },
     {
       url: 'https://jh.fyi/projects/stop-the-shame/',
+      captureFullPage: false,
     }
   ],
 };

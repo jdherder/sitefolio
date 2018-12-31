@@ -1,6 +1,7 @@
 import { Page } from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as interfaces from '../../interfaces';
 
 export default class ScreenshotHandler {
   page: Page;
@@ -9,10 +10,10 @@ export default class ScreenshotHandler {
     this.page = page;
   }
 
-  takeFullPageScreenshot(path: string) {
+  takeFullPageScreenshot(path: string, scenarioPage: interfaces.Page) {
     return this.page.screenshot({
       path: path,
-      fullPage: true,
+      fullPage: !(scenarioPage.captureFullPage === false),
     });
   }
 
