@@ -10,4 +10,5 @@ export interface Scenario {
 export interface Page {
   url: string;
   captureFullPage?: boolean;
+  screenshotSetupFn?: Function;
 }

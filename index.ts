@@ -27,6 +27,7 @@ export function run(scenario: interfaces.Scenario) {
   }).then(async browser => {
     const page = await browser.newPage();
   
+    // TODO: Move this out of core sitefolio
     const aemHandler = new AemHandler(page);
   
     Util.mkDirByPathSync(screenshotRootPath);
@@ -45,6 +46,7 @@ export function run(scenario: interfaces.Scenario) {
 
       let url = typeof scenarioPage === 'string' ? scenarioPage : scenarioPage.url;
   
+      // TODO: Move this out of core sitefolio
       if (scenario.aemAuthor) {
         url = AemHandler.setWcmModeOnUrl(url);
       }
@@ -61,8 +63,16 @@ export function run(scenario: interfaces.Scenario) {
         waitUntil: 'load'
       });
   
+      // TODO: Move this out of core sitefolio
       if (scenario.aemAuthor) {
         await aemHandler.localAuthorLoginCheck();
+      }
+
+      if (scenarioPage.screenshotSetupFn) {
+        await scenarioPage.screenshotSetupFn(page)
+          .catch((e: Error) => {
+            console.log('Could not execute screenshotSetupFn', e);
+          });
       }
   
       const title = await page.title();
