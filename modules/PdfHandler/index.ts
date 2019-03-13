@@ -5,8 +5,8 @@ import * as fs from 'fs';
 
 interface PageData {
   scenario: interfaces.Scenario;
+  scenarioPage: interfaces.Page;
   pageTitle: string;
-  pageUrl: string;
 }
 
 export default class PdfHandler {
@@ -29,7 +29,7 @@ export default class PdfHandler {
 
     const usLetterPtWidth = 612;
     const usLetterPtHeight = 792;
-    const pageWidth = usLetterPtHeight;
+    const pageWidth = usLetterPtHeight; // set width to landscape letter
 
     // TODO: 2 is kinda arbitrary here, it matches the scale factor but this is px vs pt anyway.
     const imgScaledWidth = Number(dimensions.width / 2); 
@@ -46,13 +46,25 @@ export default class PdfHandler {
       imgRenderPtHeight = imgScaledHeight;
     }
 
+    const headerText = [
+      `Page Title: ${pageData.pageTitle}`,
+      `URL: ${pageData.scenarioPage.url}`,
+      `As of: ${new Date()} - Browser width: ${pageData.scenario.screenWidth}px`,
+    ];
+
+    if (pageData.scenarioPage.description) {
+      headerText.push(`\n${pageData.scenarioPage.description}`);
+    }
+
     /* Add a new page for this image */
     this.doc.addPage({
       size: [pageWidth, imgRenderPtHeight + dataBlockHeight],
     })
-    .text(`Page Title: ${pageData.pageTitle}`, 20, 10)
-    .text(`URL: ${pageData.pageUrl}`, 20, 30)
-    .text(`As of: ${new Date()} - Browser width: ${pageData.scenario.screenWidth}px`, 20, 50)
+    .fontSize(8)
+    .text(headerText.join('\n'), 20, 10, {
+      width: pageWidth - 40,
+      align: 'left',
+    })
     .image(imgFilePath, 0, dataBlockHeight, { width: imgRenderPtWidth });
   }
 

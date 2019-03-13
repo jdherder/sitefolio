@@ -9,6 +9,7 @@ export interface Scenario {
 
 export interface Page {
   url: string;
+  description?: string;
   captureFullPage?: boolean;
   screenshotSetupFn?: Function;
 }

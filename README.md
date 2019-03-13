@@ -31,6 +31,9 @@ const scenario = {
       // Required: Fully qualified URL of page.
       url: 'https://jh.fyi/',
 
+      // Optional: Description of this page level scenario.
+      description: 'Capturing full home page.',
+
       // Optional: Capture full height of page in screenshot, default is `true`.
       captureFullPage: true,
 

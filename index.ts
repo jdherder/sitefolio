@@ -76,8 +76,8 @@ export function run(scenario: interfaces.Scenario) {
       /* Add screenshot to full site PDF */
       pdfHandler.addScreenshotPage(imgFilePath, {
         scenario,
+        scenarioPage,
         pageTitle: title,
-        pageUrl: url,
       });
     }
   
