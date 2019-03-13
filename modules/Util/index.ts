@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 export default class Util {
   constructor() { }
@@ -52,5 +53,9 @@ export default class Util {
 
   static getTimestamp() {
     return Math.round((new Date()).getTime() / 1000);
+  }
+
+  static getUuid() {
+    return uuidv4();
   }
 }

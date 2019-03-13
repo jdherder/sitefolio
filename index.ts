@@ -4,7 +4,6 @@ import * as puppeteer from 'puppeteer';
 /* Internal Module Dependencies */
 import * as interfaces from './interfaces';
 import Util from './modules/Util';
-import AemHandler from './modules/AemHandler';
 import PdfHandler from './modules/PdfHandler';
 import ScreenshotHandler from './modules/ScreenshotHandler';
 
@@ -27,9 +26,6 @@ export function run(scenario: interfaces.Scenario) {
   }).then(async browser => {
     const page = await browser.newPage();
   
-    // TODO: Move this out of core sitefolio
-    const aemHandler = new AemHandler(page);
-  
     Util.mkDirByPathSync(screenshotRootPath);
 
     let scenarioPages = scenario.pages || [];
@@ -45,11 +41,6 @@ export function run(scenario: interfaces.Scenario) {
     for (const scenarioPage of scenarioPages) {
 
       let url = typeof scenarioPage === 'string' ? scenarioPage : scenarioPage.url;
-  
-      // TODO: Move this out of core sitefolio
-      if (scenario.aemAuthor) {
-        url = AemHandler.setWcmModeOnUrl(url);
-      }
 
       await page.setViewport({
         width: scenario.screenWidth,
@@ -62,11 +53,6 @@ export function run(scenario: interfaces.Scenario) {
         timeout: 10000,
         waitUntil: 'load'
       });
-  
-      // TODO: Move this out of core sitefolio
-      if (scenario.aemAuthor) {
-        await aemHandler.localAuthorLoginCheck();
-      }
 
       if (scenarioPage.screenshotSetupFn) {
         await scenarioPage.screenshotSetupFn(page)
@@ -81,7 +67,7 @@ export function run(scenario: interfaces.Scenario) {
   
       const imgFilePath = Util.generateFilePath(
         screenshotRootPath,
-        [scenario.label, title, Util.getTimestamp()],
+        [scenario.label, title, Util.getUuid()],
         screenshotFormatExt
       );
       const screenshotHandler = new ScreenshotHandler(page);
