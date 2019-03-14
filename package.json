@@ -1,6 +1,6 @@
 {
   "name": "sitefolio",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "This is a tool to allow you to easily capture images of your static site and save to a single PDF. This might come in handy to save a visual record of your site, or for a review process to make annotations and markups easier.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
