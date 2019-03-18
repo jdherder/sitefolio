@@ -30,4 +30,26 @@ export default class ScreenshotHandler {
       }
     });
   }
+
+  static getViewportDimensions(scenario: interfaces.Scenario, scenarioPage: interfaces.Page): interfaces.ViewportDimensions {
+    let width = 1440;
+    let height = 800;
+
+    if (typeof scenarioPage.screenWidth === 'number') {
+      width = scenarioPage.screenWidth;
+    } else if (typeof scenario.screenWidth === 'number') {
+      width = scenario.screenWidth;
+    }
+
+    if (typeof scenarioPage.screenHeight === 'number') {
+      height = scenarioPage.screenHeight;
+    } else if (typeof scenario.screenHeight === 'number') {
+      height = scenario.screenHeight;
+    }
+
+    return {
+      width,
+      height,
+    }
+  }
 }

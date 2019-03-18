@@ -23,7 +23,8 @@ export function run(scenario: interfaces.Scenario) {
     headless: true,
     ignoreHTTPSErrors: true,
     args: scenario.puppeteerArgs || [],
-  }).then(async browser => {
+  })
+  .then(async browser => {
     const page = await browser.newPage();
   
     Util.mkDirByPathSync(screenshotRootPath);
@@ -40,15 +41,22 @@ export function run(scenario: interfaces.Scenario) {
   
     for (const scenarioPage of scenarioPages) {
 
-      let url = typeof scenarioPage === 'string' ? scenarioPage : scenarioPage.url;
+      const url = typeof scenarioPage === 'string' ? scenarioPage : scenarioPage.url;
+
+      const viewportDimensions = ScreenshotHandler.getViewportDimensions(scenario, scenarioPage);
 
       await page.setViewport({
-        width: scenario.screenWidth,
-        height: scenario.screenHeight,
+        width: viewportDimensions.width,
+        height: viewportDimensions.height,
         deviceScaleFactor: 2, // For higher DPI screenshots.
       });
       
       console.log('Navigating to: ', url);
+
+      if (scenarioPage.description) {
+        console.log(scenarioPage.description);
+      }
+
       await page.goto(url, {
         timeout: 10000,
         waitUntil: 'load'

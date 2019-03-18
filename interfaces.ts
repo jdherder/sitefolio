@@ -11,5 +11,12 @@ export interface Page {
   url: string;
   description?: string;
   captureFullPage?: boolean;
+  screenWidth?: number;
+  screenHeight?: number;
   screenshotSetupFn?: Function;
+}
+
+export interface ViewportDimensions {
+  width: number;
+  height: number;
 }

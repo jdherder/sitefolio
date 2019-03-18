@@ -13,7 +13,7 @@ const width = 1440;
 const scenario = {
   label: `Testing at ${width}px`,
 
-  // Set browser width and height for screenshots.
+  // Set browser viewport dimensions for screenshots.
   screenWidth: width,
   screenHeight: 800,
 
@@ -25,7 +25,7 @@ const scenario = {
     // '--ignore-certificate-errors',
   ],
 
-  // Define pages for screenshots. Each page here will be represented by an individual page in the output PDF.
+  // Define page level scenarios for screenshots. Each item here represents an individual page in the output PDF.
   pages: [
     {
       // Required: Fully qualified URL of page.
@@ -37,17 +37,18 @@ const scenario = {
       // Optional: Capture full height of page in screenshot, default is `true`.
       captureFullPage: true,
 
-      // Optional: Run your own async code on page load before screenshot. Puppeteer's `page` object is injected. Must return promise.
-      // See: https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
+      // Optional: Override the global scenario browser viewport dimensions
+      screenWidth: 1920,
+      screenHeight: 1080,
+
+      // Optional: Run your own async code on page load before screenshot. Puppeteer's `page` object is injected.
+      // For more information on Puppeteer's page object: https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
       screenshotSetupFn: async (page) => {
         return await page.hover('.contact-links a');
       },
     },
     {
       url: 'https://jh.fyi/projects/',
-    },
-    {
-      url: 'https://jh.fyi/projects/stop-the-shame/',
     }
   ],
 };
